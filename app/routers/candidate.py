@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database.connection import get_db
-from app.schemas.candidate_schema import CandidateCreate, CandidateResponse
+from app.schemas.candidateSchema import CandidateCreate, CandidateResponse
 from app.services import candidateService
 
 router = APIRouter(prefix="/candidates", tags=["Candidates"])

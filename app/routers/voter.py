@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database.connection import get_db
-from app.schemas.voter_schema import VoterCreate, VoterResponse
+from app.schemas.voterSchema import VoterCreate, VoterResponse
 from app.services import voterService
 
 router = APIRouter(prefix="/voters", tags=["Voters"])

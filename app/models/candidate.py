@@ -6,5 +6,6 @@ class Candidate(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
+    cedula = Column(String(20), unique=True, nullable=False)
     party = Column(String(100), nullable=True)
     votes = Column(Integer, default=0, nullable=False)

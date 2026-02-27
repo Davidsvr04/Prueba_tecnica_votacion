@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from app.models.voter import Voter
 from app.models.candidate import Candidate
-from app.schemas.voter_schema import VoterCreate
+from app.schemas.voterSchema import VoterCreate
 
 
 def create_voter(db: Session, voter_data: VoterCreate):
@@ -15,15 +15,16 @@ def create_voter(db: Session, voter_data: VoterCreate):
         raise HTTPException(status_code=400, detail="Email already registered")
 
     existing_candidate = db.query(Candidate).filter(
-        Candidate.name == voter_data.name
+        Candidate.cedula == voter_data.cedula
     ).first()
 
     if existing_candidate:
-        raise HTTPException(status_code=400, detail="This person is already a candidate")
+        raise HTTPException(status_code=400, detail="Esta persona ya esta registrada")
 
     new_voter = Voter(
         name=voter_data.name,
-        email=voter_data.email
+        email=voter_data.email,
+        cedula=voter_data.cedula
     )
 
     db.add(new_voter)

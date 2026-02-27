@@ -2,20 +2,21 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from app.models.candidate import Candidate
 from app.models.voter import Voter
-from app.schemas.candidate_schema import CandidateCreate
+from app.schemas.candidateSchema import CandidateCreate
 
 
 def create_candidate(db: Session, candidate_data: CandidateCreate):
 
     existing_voter = db.query(Voter).filter(
-        Voter.name == candidate_data.name
+        Voter.cedula == candidate_data.cedula
     ).first()
 
     if existing_voter:
-        raise HTTPException(status_code=400, detail="This person is already a voter")
+        raise HTTPException(status_code=400, detail="Esta persona ya esta registrada")
 
     new_candidate = Candidate(
         name=candidate_data.name,
+        cedula=candidate_data.cedula,
         party=candidate_data.party
     )
 
