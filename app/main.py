@@ -1,7 +1,9 @@
 from fastapi import FastAPI
-from app.config import settings
 from sqlalchemy import text
+from app.config import settings
 from app.database.connection import engine
+
+from app.routers import voter, candidate
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -12,6 +14,9 @@ def root():
     return {
         "message": "Corriendo API Sistema de Votación",
     }
+
+app.include_router(voter.router)
+app.include_router(candidate.router)
 
 @app.on_event("startup")
 def test_connection():
