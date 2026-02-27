@@ -11,16 +11,16 @@ def create_vote(db: Session, vote_data: VoteCreate):
 
     voter = db.query(Voter).filter(Voter.id == vote_data.voter_id).first()
     if not voter:
-        raise HTTPException(status_code=404, detail="Voter not found")
+        raise HTTPException(status_code=404, detail="Votante no encontrado")
 
     candidate = db.query(Candidate).filter(
         Candidate.id == vote_data.candidate_id
     ).first()
     if not candidate:
-        raise HTTPException(status_code=404, detail="Candidate not found")
+        raise HTTPException(status_code=404, detail="Candidato no encontrado")
 
     if voter.has_voted:
-        raise HTTPException(status_code=400, detail="Voter has already voted")
+        raise HTTPException(status_code=400, detail="Votante ya ha votado")
 
     try:
         new_vote = Vote(
@@ -39,7 +39,7 @@ def create_vote(db: Session, vote_data: VoteCreate):
 
     except Exception:
         db.rollback()
-        raise HTTPException(status_code=500, detail="Error processing vote")
+        raise HTTPException(status_code=500, detail="Error al procesar el voto")
 
 
 def get_all_votes(db: Session):

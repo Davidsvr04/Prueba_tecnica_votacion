@@ -12,8 +12,8 @@ def create_candidate(candidate: CandidateCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=list[CandidateResponse])
-def get_candidates(db: Session = Depends(get_db)):
-    return candidateService.get_all_candidates(db)
+def get_candidates(skip: int = 0, limit: int = 10, name: str = None, party: str = None, db: Session = Depends(get_db)):
+    return candidateService.get_all_candidates(db, skip=skip, limit=limit, name=name, party=party)
 
 
 @router.get("/{candidate_id}", response_model=CandidateResponse)

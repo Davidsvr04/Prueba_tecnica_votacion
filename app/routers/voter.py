@@ -13,8 +13,8 @@ def create_voter(voter: VoterCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=list[VoterResponse])
-def get_voters(db: Session = Depends(get_db)):
-    return voterService.get_all_voters(db)
+def get_voters(skip: int = 0, limit: int = 10, name: str = None, cedula: str = None, db: Session = Depends(get_db)):
+    return voterService.get_all_voters(db, skip=skip, limit=limit, name=name, cedula=cedula)
 
 
 @router.get("/{voter_id}", response_model=VoterResponse)

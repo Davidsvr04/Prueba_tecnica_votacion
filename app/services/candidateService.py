@@ -27,8 +27,16 @@ def create_candidate(db: Session, candidate_data: CandidateCreate):
     return new_candidate
 
 
-def get_all_candidates(db: Session):
-    return db.query(Candidate).all()
+def get_all_candidates(db: Session, skip: int = 0, limit: int = 10, name: str = None, party: str = None):
+    query = db.query(Candidate)
+    
+    if name:
+        query = query.filter(Candidate.name.ilike(f"%{name}%"))
+    
+    if party:
+        query = query.filter(Candidate.party.ilike(f"%{party}%"))
+    
+    return query.offset(skip).limit(limit).all()
 
 
 def get_candidate_by_id(db: Session, candidate_id: int):
@@ -37,7 +45,7 @@ def get_candidate_by_id(db: Session, candidate_id: int):
     ).first()
 
     if not candidate:
-        raise HTTPException(status_code=404, detail="Candidate not found")
+        raise HTTPException(status_code=404, detail="Candidato no encontrado")
 
     return candidate
 
@@ -48,9 +56,9 @@ def delete_candidate(db: Session, candidate_id: int):
     ).first()
 
     if not candidate:
-        raise HTTPException(status_code=404, detail="Candidate not found")
+        raise HTTPException(status_code=404, detail="Candidato no encontrado")
 
     db.delete(candidate)
     db.commit()
 
-    return {"message": "Candidate deleted successfully"}
+    return {"message": "Candidato eliminado exitosamente"}

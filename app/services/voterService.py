@@ -34,15 +34,23 @@ def create_voter(db: Session, voter_data: VoterCreate):
     return new_voter
 
 
-def get_all_voters(db: Session):
-    return db.query(Voter).all()
+def get_all_voters(db: Session, skip: int = 0, limit: int = 10, name: str = None, cedula: str = None):
+    query = db.query(Voter)
+    
+    if name:
+        query = query.filter(Voter.name.ilike(f"%{name}%"))
+    
+    if cedula:
+        query = query.filter(Voter.cedula.ilike(f"%{cedula}%"))
+    
+    return query.offset(skip).limit(limit).all()
 
 
 def get_voter_by_id(db: Session, voter_id: int):
     voter = db.query(Voter).filter(Voter.id == voter_id).first()
 
     if not voter:
-        raise HTTPException(status_code=404, detail="Voter not found")
+        raise HTTPException(status_code=404, detail="Votante no encontrado")
 
     return voter
 
@@ -51,9 +59,9 @@ def delete_voter(db: Session, voter_id: int):
     voter = db.query(Voter).filter(Voter.id == voter_id).first()
 
     if not voter:
-        raise HTTPException(status_code=404, detail="Voter not found")
+        raise HTTPException(status_code=404, detail="Votante no encontrado")
 
     db.delete(voter)
     db.commit()
 
-    return {"message": "Voter deleted successfully"}
+    return {"message": "Votante eliminado exitosamente"}
