@@ -1,18 +1,26 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.schemas.candidateSchema import CandidateCreate, CandidateResponse
+from app.schemas.userSchema import UserResponse
 from app.services import candidateService
+from app.core.dependencies import get_current_user
 
 router = APIRouter(prefix="/candidates", tags=["Candidates"])
 
 @router.post("/", response_model=CandidateResponse)
-def create_candidate(candidate: CandidateCreate, db: Session = Depends(get_db)):
+def create_candidate(candidate: CandidateCreate, db: Session = Depends(get_db),current_user: UserResponse = Depends(get_current_user)
+):
     return candidateService.create_candidate(db, candidate)
 
 
 @router.get("/", response_model=list[CandidateResponse])
-def get_candidates(skip: int = 0, limit: int = 10, name: str = None, party: str = None, db: Session = Depends(get_db)):
+def get_candidates(skip: int = Query(0, ge=1, le=100),
+    limit: int = Query(10, ge=1, le=100),
+    name: str = Query(None),
+    party: str = Query(None),
+    db: Session = Depends(get_db)
+):
     return candidateService.get_all_candidates(db, skip=skip, limit=limit, name=name, party=party)
 
 
@@ -22,5 +30,6 @@ def get_candidate(candidate_id: int, db: Session = Depends(get_db)):
 
 
 @router.delete("/{candidate_id}")
-def delete_candidate(candidate_id: int, db: Session = Depends(get_db)):
+def delete_candidate(candidate_id: int, db: Session = Depends(get_db), current_user: UserResponse = Depends(get_current_user)
+):
     return candidateService.delete_candidate(db, candidate_id)

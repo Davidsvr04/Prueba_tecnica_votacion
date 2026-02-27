@@ -2,13 +2,19 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.schemas.voteSchema import VoteCreate, VoteResponse
+from app.schemas.userSchema import UserResponse
 from app.services import votingService
+from app.core.dependencies import get_current_user
 
 router = APIRouter(prefix="/votes", tags=["Votes"])
 
 
 @router.post("/", response_model=VoteResponse)
-def create_vote(vote: VoteCreate, db: Session = Depends(get_db)):
+def create_vote(
+    vote: VoteCreate, 
+    db: Session = Depends(get_db),
+    current_user: UserResponse = Depends(get_current_user)
+):
     return votingService.create_vote(db, vote)
 
 

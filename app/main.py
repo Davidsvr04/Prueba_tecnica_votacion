@@ -3,7 +3,7 @@ from sqlalchemy import text
 from app.config import settings
 from app.database.connection import engine
 
-from app.routers import voter, candidate, votes
+from app.routers import voter, candidate, votes, user
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -15,6 +15,7 @@ def root():
         "message": "Corriendo API Sistema de Votación",
     }
 
+app.include_router(user.router)
 app.include_router(voter.router)
 app.include_router(candidate.router)
 app.include_router(votes.router)
